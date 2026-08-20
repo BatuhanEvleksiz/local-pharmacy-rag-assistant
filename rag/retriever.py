@@ -39,6 +39,15 @@ def _normalize_drug(value: str) -> str:
     return re.sub(r"\s+", " ", value.strip()).lower()
 
 
+def _question_mentions_drug(question: str, drug_name: str) -> bool:
+    normalized_question = _normalize_drug(question)
+    normalized_drug = _normalize_drug(drug_name)
+    if normalized_drug and normalized_drug in normalized_question:
+        return True
+    tokens = [token for token in re.split(r"\W+", normalized_drug) if len(token) >= 4]
+    return bool(tokens) and all(token in normalized_question for token in tokens[:2])
+
+
 def retrieve(
     question: str,
     settings: Settings,
@@ -70,6 +79,8 @@ def retrieve(
         score = base_score
         if section_hint and section == section_hint:
             score += 0.08
+        if _question_mentions_drug(question, str(metadata.get("drug_name", ""))):
+            score += 0.14
         if drug_filter and drug_filter != "Tum belgeler":
             score += 0.04
 

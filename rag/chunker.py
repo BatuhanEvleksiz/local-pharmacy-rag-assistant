@@ -78,6 +78,38 @@ def _split_paragraphs(text: str) -> list[str]:
     return [p.strip() for p in re.split(r"(?<=[.!?])\s+", text) if p.strip()]
 
 
+def _is_section_heading(paragraph: str) -> bool:
+    first_line = paragraph.splitlines()[0].strip()
+    if re.match(r"^\d+\.\s+", first_line):
+        return True
+    normalized = _normalize(first_line)
+    return any(
+        alias in normalized
+        for aliases in SECTION_ALIASES.values()
+        for alias in aliases
+    )
+
+
+def _group_by_section(paragraphs: list[str]) -> list[tuple[str, list[str]]]:
+    groups: list[tuple[str, list[str]]] = []
+    current_section = "genel"
+    current_paragraphs: list[str] = []
+
+    for paragraph in paragraphs:
+        if _is_section_heading(paragraph):
+            if current_paragraphs:
+                groups.append((current_section, current_paragraphs))
+            current_section = detect_section(paragraph, current_section)
+            current_paragraphs = [paragraph]
+        else:
+            current_section = detect_section(paragraph, current_section)
+            current_paragraphs.append(paragraph)
+
+    if current_paragraphs:
+        groups.append((current_section, current_paragraphs))
+    return groups
+
+
 def _pack_paragraphs(paragraphs: list[str], max_chars: int, overlap_chars: int) -> list[str]:
     chunks: list[str] = []
     current = ""
@@ -110,22 +142,25 @@ def chunk_document(
     overlap_chars: int = 120,
 ) -> list[Chunk]:
     paragraphs = _split_paragraphs(document.text)
-    raw_chunks = _pack_paragraphs(paragraphs, max_chars=max_chars, overlap_chars=overlap_chars)
-
     chunks: list[Chunk] = []
-    current_section = "genel"
-    for index, text in enumerate(raw_chunks):
-        current_section = detect_section(text, current_section)
-        chunks.append(
-            Chunk(
-                id=f"{document.path.stem}-{index}",
-                text=text,
-                source_file=document.path.name,
-                drug_name=document.drug_name,
-                section=current_section,
-                chunk_index=index,
-            )
+    for section, section_paragraphs in _group_by_section(paragraphs):
+        raw_chunks = _pack_paragraphs(
+            section_paragraphs,
+            max_chars=max_chars,
+            overlap_chars=overlap_chars,
         )
+        for text in raw_chunks:
+            index = len(chunks)
+            chunks.append(
+                Chunk(
+                    id=f"{document.path.stem}-{index}",
+                    text=text,
+                    source_file=document.path.name,
+                    drug_name=document.drug_name,
+                    section=section,
+                    chunk_index=index,
+                )
+            )
     return chunks
 
 
