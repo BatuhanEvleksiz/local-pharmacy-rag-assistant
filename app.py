@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import re
+
 import streamlit as st
 
 from rag.config import get_settings
@@ -34,6 +36,45 @@ def render_sources(chunks):
                 f"`{chunk.source_file}` - skor: `{chunk.score}`"
             )
             st.caption(chunk.text[:900] + ("..." if len(chunk.text) > 900 else ""))
+
+
+def normalize_text(value: str) -> str:
+    table = str.maketrans("çğıöşüÇĞİÖŞÜ", "cgiosuCGIOSU")
+    return value.translate(table).lower()
+
+
+def requested_unknown_drug(question: str, known_drugs: list[str]) -> str | None:
+    normalized_question = normalize_text(question)
+    match = re.search(r"\b([a-z0-9][a-z0-9-]*)\s+ilac", normalized_question)
+    if not match:
+        return None
+
+    requested = match.group(1)
+    known_tokens = {
+        token
+        for drug in known_drugs
+        for token in re.split(r"\W+", normalize_text(drug))
+        if len(token) >= 4
+    }
+    if requested in known_tokens:
+        return None
+    return requested.title()
+
+
+def build_local_fallback_answer(chunks) -> str:
+    excerpts = []
+    for chunk in chunks[:2]:
+        excerpts.append(
+            f"- {chunk.drug_name}, {chunk.section}: {chunk.text[:420]}"
+            + ("..." if len(chunk.text) > 420 else "")
+        )
+    return (
+        "Yerel LLM endpoint'ine ulasilamadi, bu yuzden uretken cevap yerine "
+        "bulunan kaynak parcalarinin kisa bir ozetini gosteriyorum:\n\n"
+        + "\n\n".join(excerpts)
+        + "\n\nNot: Foundry Local'i baslattiktan sonra ayni soruyu tekrar sorarsan "
+        "model kaynaklara dayali nihai yaniti uretebilir."
+    )
 
 
 def main() -> None:
@@ -93,6 +134,20 @@ def main() -> None:
             )
             return
 
+        unknown_drug = requested_unknown_drug(question, drugs[1:])
+        if unknown_drug:
+            answer = (
+                f"`{unknown_drug}` icin yuklenen belgelerde bir kayit bulamadim. "
+                "Bu ilaca ait resmi prospektus veya kullanma talimati dosyasini "
+                "`docs/` klasorune ekleyip `python ingest.py` calistirdiktan sonra "
+                "tekrar sorabilirsin."
+            )
+            st.markdown(answer)
+            st.session_state.messages.append(
+                {"role": "assistant", "content": answer, "sources": []}
+            )
+            return
+
         with st.spinner("Belgelerde ilgili kisimlar araniyor..."):
             chunks = retrieve(
                 question=question,
@@ -118,12 +173,8 @@ def main() -> None:
         try:
             with st.spinner("Yerel model yanit uretuyor..."):
                 answer = generator.answer(question, chunks)
-        except Exception as exc:
-            answer = (
-                "Ilgili belge parcalari bulundu ancak yerel LLM endpoint'ine ulasilamadi. "
-                "Foundry Local'in calistigindan ve `.env` ayarlarinin dogru oldugundan emin olun.\n\n"
-                f"Teknik hata: `{exc}`"
-            )
+        except Exception:
+            answer = build_local_fallback_answer(chunks)
 
         st.markdown(answer)
         render_sources(chunks)
