@@ -11,7 +11,6 @@ from rag.vector_store import EmbeddingModel, VectorStore
 
 st.set_page_config(
     page_title="Yerel Ilac Bilgi Asistani",
-    page_icon="RX",
     layout="wide",
 )
 
@@ -56,8 +55,7 @@ def main() -> None:
         st.write("Veritabani bos ise once terminalden calistirin:")
         st.code("python ingest.py", language="bash")
         st.warning(
-            "Bu uygulama bilgi amaclidir. Saglik kararlariniz icin doktor veya eczaciya danisin.",
-            icon="!",
+            "Bu uygulama bilgi amaclidir. Saglik kararlariniz icin doktor veya eczaciya danisin."
         )
 
     if "messages" not in st.session_state:
