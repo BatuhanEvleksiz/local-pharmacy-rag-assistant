@@ -1,0 +1,40 @@
+ILAC ADI: Demo Antihistaminik 10 mg Tablet
+
+Bu belge egitim ve yazilim testi icin hazirlanmis ornek bir kullanma talimatidir.
+Gercek bir ilaci temsil etmez ve tibbi kararlar icin kullanilamaz.
+
+1. Ne icin kullanilir
+
+Demo Antihistaminik 10 mg Tablet, alerjik nezle, hapsirma, burun akintisi ve kasinti gibi
+alerji belirtileri hakkinda ornek bilgi iceren kurgusal bir dokumandir. Amac, RAG
+asistaninin kullanma talimati benzeri metinlerden bilgi bulmasini gostermektir.
+
+2. Kullanmadan once dikkat edilmesi gerekenler
+
+Belgede, etkin maddeye karsi alerji varsa kullanilmamasi gerektigi belirtilir. Uyku hali,
+dikkat azalmasi veya alkol ile birlikte kullanim gibi durumlarda dikkatli olunmasi gerektigi
+ifade edilir. Arac veya makine kullanimi gerektiren islerde kullanici dikkatli olmalidir.
+
+Gebelik, emzirme, ileri yas, karaciger hastaligi veya bobrek hastaligi gibi durumlarda
+saglik uzmanina danisilmasi gerektigi belirtilir.
+
+3. Nasil kullanilir
+
+Bu demo belge kisisel doz tavsiyesi vermez. Kullanim sikligi, uygulama yolu ve tedavi
+suresi icin resmi talimat veya saglik uzmani onerisi esas alinmalidir.
+
+4. Olasi yan etkiler
+
+Ornek yan etkiler arasinda uyku hali, agiz kurulugu, bas agrisi, halsizlik ve mide
+rahatsizligi sayilmistir. Yaygin dokuntu, yuz veya dudaklarda sislik ve nefes darligi gibi
+ciddi alerji belirtileri olursa acil tibbi yardim alinmalidir.
+
+5. Saklama kosullari
+
+Kuru ortamda, oda sicakliginda ve cocuklarin erisemeyecegi yerde saklanmasi gerektigi
+belirtilir. Ambalaji bozulmus urunler kullanilmamalidir.
+
+6. Icerik
+
+Etkin madde: Demo antihistaminik bileseni.
+Yardimci maddeler: Ornek laktoz tasiyici, ornek nişasta alternatifi, ornek kaplama maddesi.

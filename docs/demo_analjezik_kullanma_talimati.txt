@@ -1,0 +1,42 @@
+ILAC ADI: Demo Analjezik 500 mg Tablet
+
+Bu belge egitim ve yazilim testi icin hazirlanmis ornek bir kullanma talimatidir.
+Gercek bir ilaci temsil etmez ve tibbi kararlar icin kullanilamaz.
+
+1. Ne icin kullanilir
+
+Demo Analjezik 500 mg Tablet, hafif ve orta siddette agri ve ates durumlari hakkinda
+ornek bilgi vermek icin kullanilan kurgusal bir dokumandir. Bu metin, RAG sisteminin
+belgeden kaynakli cevap uretme becerisini test etmek icin tasarlanmistir.
+
+2. Kullanmadan once dikkat edilmesi gerekenler
+
+Demo Analjezik'e veya icerigindeki yardimci maddelerden herhangi birine karsi bilinen
+alerjiniz varsa bu belgeye gore urun kullanilmamalidir. Karaciger hastaligi, bobrek
+hastaligi, duzenli alkol kullanimi veya birden fazla agri kesici kullanimi gibi durumlarda
+saglik uzmanina danisilmasi gerektigi belirtilir.
+
+Gebelik veya emzirme doneminde ilac kullanimi icin doktor veya eczaci gorusu alinmalidir.
+Bu dokuman, kisisel risk degerlendirmesi yapmaz.
+
+3. Nasil kullanilir
+
+Bu kurgusal belge doz onerisi vermek amaciyla hazirlanmamistir. Kullanici, gercek ilaclarda
+doktorun veya resmi kullanma talimatinin belirttigi uygulama yoluna uymalidir. Doz artirma,
+doz azaltma veya tedaviyi kesme kararlari saglik uzmani tarafindan verilmelidir.
+
+4. Olasi yan etkiler
+
+Ornek yan etki listesi: mide bulantisi, karin rahatsizligi, bas donmesi, deri dokuntusu ve
+alerjik reaksiyon belirtileri. Nefes darligi, yuzde sislik veya yaygin dokuntu gibi ciddi
+alerji belirtileri ortaya cikarsa acil tibbi yardim alinmalidir.
+
+5. Saklama kosullari
+
+Ornek saklama kosulu olarak oda sicakligi, kuru ortam ve cocuklarin erisemeyecegi yerler
+belirtilmistir. Gercek urunlerde resmi kullanma talimati dikkate alinmalidir.
+
+6. Icerik
+
+Etkin madde: Demo analjezik bileseni.
+Yardimci maddeler: Ornek dolgu maddesi, ornek baglayici, ornek kaplama maddesi.
