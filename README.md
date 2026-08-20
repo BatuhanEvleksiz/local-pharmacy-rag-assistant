@@ -34,7 +34,13 @@ FOUNDRY_MODEL=Phi-3.5-mini-instruct-generic-gpu:2
 
 ## Calistirma
 
-Once demo belgelerini indeksleyin:
+Once resmi veri belgelerini olusturun:
+
+```bash
+python scripts/fetch_titck_data.py
+```
+
+Sonra belgeleri indeksleyin:
 
 ```bash
 python ingest.py
@@ -48,20 +54,21 @@ streamlit run app.py
 
 ## Demo Akisi
 
-1. `python ingest.py` ile `docs/` klasorundeki belgeleri ChromaDB'ye indeksleyin.
-2. `streamlit run app.py` ile arayuzu acin.
-3. Ilac filtresini "Tum belgeler" veya belirli bir demo belge olarak secin.
-4. Ornek sorular sorun:
+1. `python scripts/fetch_titck_data.py` ile TİTCK resmi listelerinden yerel korpus uretin.
+2. `python ingest.py` ile `real_docs/` klasorundeki belgeleri ChromaDB'ye indeksleyin.
+3. `streamlit run app.py` ile arayuzu acin.
+4. Ilac filtresini "Tum belgeler" veya belirli bir ilac kaydi olarak secin.
+5. Ornek sorular sorun:
 
 ```text
-Demo Antihistaminik hangi alerji belirtileri icin ornek bilgi iceriyor?
-Demo Analjezik belgesinde ciddi alerji belirtisi olarak neler geciyor?
-Demo Antiasit belgesinde saklama kosullari nasil anlatiliyor?
+PAROL hakkinda hangi bilgiler var?
+Etkin maddesi parasetamol olan urunleri ozetle.
+Ruhsat sahibi firma bilgisi nedir?
 Bu ilaci kullanayim mi?
 Yanlislikla cok fazla ictim ve nefes almakta zorlaniyorum, ne yapayim?
 ```
 
-5. Cevabin altindaki "Kullanilan kaynak parcalari" bolumunden kaynaklari kontrol edin.
+6. Cevabin altindaki "Kullanilan kaynak parcalari" bolumunden kaynaklari kontrol edin.
 
 ## Bilesenler
 
@@ -74,6 +81,7 @@ Yanlislikla cok fazla ictim ve nefes almakta zorlaniyorum, ne yapayim?
 - `app.py`: Streamlit sohbet arayuzu.
 - `ingest.py`: Belgeleri indeksleme komutu.
 - `evaluate.py`: Test sorulari icin retrieval ve safety smoke report.
+- `scripts/fetch_titck_data.py`: TİTCK resmi XLSX listelerini indirir ve `real_docs/` icin metin korpusu uretir.
 
 ## Degerlendirme
 
@@ -91,7 +99,8 @@ kontrolu icindir.
 
 - Bu uygulama teshis koymaz, tedavi onermez, doz degisikligi tavsiye etmez.
 - Yanitlar yalnizca yuklenen belgelerdeki metne dayanir.
-- Demo belgeleri egitim amaclidir. Gercek kullanim icin resmi ve guncel kaynaklardan alinan KUB/KT dokumanlari eklenmelidir.
+- Varsayilan mod TİTCK resmi listelerinden uretilen yerel korpusla calisir.
+- KUB/KT PDF metinleri eklenirse sistem ayni `real_docs/` klasorunden indeksleyebilir.
 - Saglikla ilgili kararlar icin doktor veya eczaciya basvurulmalidir.
 
 ## Dosya Yapisi
@@ -109,7 +118,12 @@ rag/
   generator.py
   prompts.py
 docs/
+examples/demo_docs/
   demo_*.txt
+real_docs/
+  titck_*.txt
+data_sources/
+  titck_*.xlsx
 data/
   chroma/
 eval_questions.json

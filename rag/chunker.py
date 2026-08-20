@@ -138,8 +138,8 @@ def _pack_paragraphs(paragraphs: list[str], max_chars: int, overlap_chars: int) 
 
 def chunk_document(
     document: SourceDocument,
-    max_chars: int = 950,
-    overlap_chars: int = 120,
+    max_chars: int = 3200,
+    overlap_chars: int = 0,
 ) -> list[Chunk]:
     paragraphs = _split_paragraphs(document.text)
     chunks: list[Chunk] = []

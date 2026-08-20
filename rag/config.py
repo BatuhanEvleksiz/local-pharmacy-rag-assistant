@@ -12,7 +12,7 @@ ROOT_DIR = Path(__file__).resolve().parents[1]
 
 @dataclass(frozen=True)
 class Settings:
-    docs_dir: Path = ROOT_DIR / "docs"
+    docs_dir: Path = ROOT_DIR / "real_docs"
     data_dir: Path = ROOT_DIR / "data"
     chroma_dir: Path = ROOT_DIR / "data" / "chroma"
     collection_name: str = "pharmacy_leaflets"
@@ -29,7 +29,7 @@ class Settings:
 def get_settings() -> Settings:
     load_dotenv(ROOT_DIR / ".env")
     return Settings(
-        docs_dir=Path(os.getenv("DOCS_DIR", ROOT_DIR / "docs")),
+        docs_dir=Path(os.getenv("DOCS_DIR", ROOT_DIR / "real_docs")),
         data_dir=Path(os.getenv("DATA_DIR", ROOT_DIR / "data")),
         chroma_dir=Path(os.getenv("CHROMA_DIR", ROOT_DIR / "data" / "chroma")),
         collection_name=os.getenv("CHROMA_COLLECTION", "pharmacy_leaflets"),

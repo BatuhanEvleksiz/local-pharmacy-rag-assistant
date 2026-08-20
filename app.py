@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import re
-
 import streamlit as st
 
 from rag.config import get_settings
@@ -38,29 +36,6 @@ def render_sources(chunks):
             st.caption(chunk.text[:900] + ("..." if len(chunk.text) > 900 else ""))
 
 
-def normalize_text(value: str) -> str:
-    table = str.maketrans("çğıöşüÇĞİÖŞÜ", "cgiosuCGIOSU")
-    return value.translate(table).lower()
-
-
-def requested_unknown_drug(question: str, known_drugs: list[str]) -> str | None:
-    normalized_question = normalize_text(question)
-    match = re.search(r"\b([a-z0-9][a-z0-9-]*)\s+ilac", normalized_question)
-    if not match:
-        return None
-
-    requested = match.group(1)
-    known_tokens = {
-        token
-        for drug in known_drugs
-        for token in re.split(r"\W+", normalize_text(drug))
-        if len(token) >= 4
-    }
-    if requested in known_tokens:
-        return None
-    return requested.title()
-
-
 def build_local_fallback_answer(chunks) -> str:
     excerpts = []
     for chunk in chunks[:2]:
@@ -90,6 +65,7 @@ def main() -> None:
         st.header("Bilgi tabani")
         count = vector_store.count()
         st.metric("Indeksli parca", count)
+        st.caption(f"Belge klasoru: `{settings.docs_dir}`")
         drugs = ["Tum belgeler"] + list_drugs(vector_store)
         selected_drug = st.selectbox("Ilac filtresi", drugs, index=0)
         st.divider()
@@ -128,20 +104,6 @@ def main() -> None:
 
         if vector_store.count() == 0:
             answer = "Henuz indekslenmis belge yok. Once `python ingest.py` calistirin."
-            st.markdown(answer)
-            st.session_state.messages.append(
-                {"role": "assistant", "content": answer, "sources": []}
-            )
-            return
-
-        unknown_drug = requested_unknown_drug(question, drugs[1:])
-        if unknown_drug:
-            answer = (
-                f"`{unknown_drug}` icin yuklenen belgelerde bir kayit bulamadim. "
-                "Bu ilaca ait resmi prospektus veya kullanma talimati dosyasini "
-                "`docs/` klasorune ekleyip `python ingest.py` calistirdiktan sonra "
-                "tekrar sorabilirsin."
-            )
             st.markdown(answer)
             st.session_state.messages.append(
                 {"role": "assistant", "content": answer, "sources": []}

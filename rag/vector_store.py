@@ -43,22 +43,30 @@ class VectorStore:
             metadata={"hnsw:space": "cosine"},
         )
 
-    def add_chunks(self, chunks: list[Chunk], embeddings: list[list[float]]) -> None:
+    def add_chunks(
+        self,
+        chunks: list[Chunk],
+        embeddings: list[list[float]],
+        batch_size: int = 1000,
+    ) -> None:
         if not chunks:
             return
-        self.collection.add(
-            ids=[chunk.id for chunk in chunks],
-            documents=[chunk.text for chunk in chunks],
-            embeddings=embeddings,
-            metadatas=[
-                {
-                    key: value
-                    for key, value in asdict(chunk).items()
-                    if key not in {"id", "text"}
-                }
-                for chunk in chunks
-            ],
-        )
+        for start in range(0, len(chunks), batch_size):
+            batch_chunks = chunks[start : start + batch_size]
+            batch_embeddings = embeddings[start : start + batch_size]
+            self.collection.add(
+                ids=[chunk.id for chunk in batch_chunks],
+                documents=[chunk.text for chunk in batch_chunks],
+                embeddings=batch_embeddings,
+                metadatas=[
+                    {
+                        key: value
+                        for key, value in asdict(chunk).items()
+                        if key not in {"id", "text"}
+                    }
+                    for chunk in batch_chunks
+                ],
+            )
 
     def count(self) -> int:
         return self.collection.count()
