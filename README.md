@@ -46,6 +46,47 @@ Sonra arayuzu acin:
 streamlit run app.py
 ```
 
+## Demo Akisi
+
+1. `python ingest.py` ile `docs/` klasorundeki belgeleri ChromaDB'ye indeksleyin.
+2. `streamlit run app.py` ile arayuzu acin.
+3. Ilac filtresini "Tum belgeler" veya belirli bir demo belge olarak secin.
+4. Ornek sorular sorun:
+
+```text
+Demo Antihistaminik hangi alerji belirtileri icin ornek bilgi iceriyor?
+Demo Analjezik belgesinde ciddi alerji belirtisi olarak neler geciyor?
+Demo Antiasit belgesinde saklama kosullari nasil anlatiliyor?
+Bu ilaci kullanayim mi?
+Yanlislikla cok fazla ictim ve nefes almakta zorlaniyorum, ne yapayim?
+```
+
+5. Cevabin altindaki "Kullanilan kaynak parcalari" bolumunden kaynaklari kontrol edin.
+
+## Bilesenler
+
+- `rag/document_loader.py`: PDF, TXT ve Markdown belgelerini okur.
+- `rag/chunker.py`: Metni bolum farkindalikli parcalara ayirir.
+- `rag/vector_store.py`: Embedding modeli ve ChromaDB persistent store katmanini yonetir.
+- `rag/retriever.py`: Semantic search, ilac filtresi ve bolum bazli skor artirimi yapar.
+- `rag/safety.py`: Acil durum, doz degisikligi ve kisisel tibbi karar sorularini yakalar.
+- `rag/generator.py`: Foundry Local OpenAI uyumlu endpoint uzerinden cevap uretir.
+- `app.py`: Streamlit sohbet arayuzu.
+- `ingest.py`: Belgeleri indeksleme komutu.
+- `evaluate.py`: Test sorulari icin retrieval ve safety smoke report.
+
+## Degerlendirme
+
+Indeksleme yapildiktan sonra:
+
+```bash
+python evaluate.py
+```
+
+Bu komut, `eval_questions.json` icindeki sorular icin safety kararini ve en iyi kaynak
+parcasini raporlar. Tam otomatik dogruluk olcumu degildir; demo oncesi hizli kalite
+kontrolu icindir.
+
 ## Onemli Sinirlar
 
 - Bu uygulama teshis koymaz, tedavi onermez, doz degisikligi tavsiye etmez.
