@@ -39,6 +39,41 @@ def _normalize_drug(value: str) -> str:
     return re.sub(r"\s+", " ", value.strip()).lower()
 
 
+def normalize_query_text(value: str) -> str:
+    table = str.maketrans("çğıöşüÇĞİÖŞÜ", "cgiosuCGIOSU")
+    return value.translate(table).lower()
+
+
+def query_terms(question: str) -> list[str]:
+    stopwords = {
+        "hangi",
+        "hakkinda",
+        "nelerdir",
+        "nedir",
+        "ilac",
+        "ilaci",
+        "ilacin",
+        "yan",
+        "etki",
+        "etkileri",
+        "kullan",
+        "kullanilir",
+    }
+    return [
+        token
+        for token in re.split(r"\W+", normalize_query_text(question))
+        if len(token) >= 4 and token not in stopwords
+    ]
+
+
+def normalized_tokens(value: str) -> set[str]:
+    return {
+        token
+        for token in re.split(r"\W+", normalize_query_text(value))
+        if token
+    }
+
+
 def _question_mentions_drug(question: str, drug_name: str) -> bool:
     normalized_question = _normalize_drug(question)
     normalized_drug = _normalize_drug(drug_name)
@@ -68,6 +103,7 @@ def retrieve(
     )
 
     section_hint = infer_section_hint(question)
+    terms = query_terms(question)
     chunks: list[RetrievedChunk] = []
     for text, metadata, distance in zip(
         result.get("documents", [[]])[0],
@@ -81,6 +117,11 @@ def retrieve(
             score += 0.08
         if _question_mentions_drug(question, str(metadata.get("drug_name", ""))):
             score += 0.14
+        text_tokens = normalized_tokens(text)
+        score += min(
+            0.2,
+            sum(0.05 for term in terms if term in text_tokens),
+        )
         if drug_filter and drug_filter != "Tum belgeler":
             score += 0.04
 

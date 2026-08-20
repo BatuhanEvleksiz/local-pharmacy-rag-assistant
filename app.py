@@ -3,6 +3,11 @@ from __future__ import annotations
 import streamlit as st
 
 from rag.config import get_settings
+from rag.coverage import (
+    asks_for_clinical_detail,
+    filter_chunks_by_query_terms,
+    only_list_sources,
+)
 from rag.generator import AnswerGenerator
 from rag.retriever import list_drugs, retrieve
 from rag.safety import classify_question
@@ -36,9 +41,9 @@ def render_sources(chunks):
             st.caption(chunk.text[:900] + ("..." if len(chunk.text) > 900 else ""))
 
 
-def build_local_fallback_answer(chunks) -> str:
+def build_local_fallback_answer(question, chunks) -> str:
     excerpts = []
-    for chunk in chunks[:2]:
+    for chunk in filter_chunks_by_query_terms(question, chunks)[:2]:
         excerpts.append(
             f"- {chunk.drug_name}, {chunk.section}: {chunk.text[:420]}"
             + ("..." if len(chunk.text) > 420 else "")
@@ -132,11 +137,32 @@ def main() -> None:
             )
             return
 
+        if asks_for_clinical_detail(question) and only_list_sources(chunks):
+            answer = (
+                "Bu soru yan etki, kullanım talimatı veya benzeri klinik detay gerektiriyor. "
+                "Şu an indeksli resmi TİTCK ürün listeleri ürün adı, barkod, etkin madde, "
+                "ATC, firma ve ruhsat bilgisi gibi kayıt bilgilerini içeriyor; yan etki "
+                "metni içermiyor.\n\n"
+                "Bu yüzden Parol'un yan etkileri için güvenilir cevap veremem. Bu cevap "
+                "için ilgili KÜB/KT veya kullanma talimatı PDF'i `real_docs/` klasörüne "
+                "eklenip `python ingest.py` yeniden çalıştırılmalı."
+            )
+            st.markdown(answer)
+            render_sources(filter_chunks_by_query_terms(question, chunks))
+            st.session_state.messages.append(
+                {
+                    "role": "assistant",
+                    "content": answer,
+                    "sources": filter_chunks_by_query_terms(question, chunks),
+                }
+            )
+            return
+
         try:
             with st.spinner("Yerel model yanit uretuyor..."):
                 answer = generator.answer(question, chunks)
         except Exception:
-            answer = build_local_fallback_answer(chunks)
+            answer = build_local_fallback_answer(question, chunks)
 
         st.markdown(answer)
         render_sources(chunks)
