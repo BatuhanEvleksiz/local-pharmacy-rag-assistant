@@ -30,7 +30,7 @@ Yerel Eczacılık RAG Asistanı, eczacılık alanında resmi belgeye dayalı sor
 
 ## Mevcut Durum
 
-- GitHub repo public olarak olusturuldu ve adim adim commit'lendi.
+- Proje kodu ve dokümantasyonu GitHub üzerinde yayınlanabilir hale getirildi.
 - Resmi liste modu calisiyor.
 - Seed listedeki yaygın ilaçlar için KÜB/KT indirme desteği eklendi.
 - Yerelde 44 belge ve 4767 chunk indekslendi.

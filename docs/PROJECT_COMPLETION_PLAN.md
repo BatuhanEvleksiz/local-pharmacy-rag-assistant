@@ -1,6 +1,6 @@
 # Proje Tamamlama Plani
 
-Bu belge, Yerel Eczacilik RAG Asistani'nin staj demosu icin "tamam" sayilmasi gereken anlamli adimlari listeler. Her adim ayri ve anlamli bir Git commit'i olarak ilerletilir.
+Bu belge, Yerel Eczacılık RAG Asistanı'nın staj demosu için tamamlanması gereken teknik kapsamı ve kabul kriterlerini listeler.
 
 ## Kabul Kriterleri
 
