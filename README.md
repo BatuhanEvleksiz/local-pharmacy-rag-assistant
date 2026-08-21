@@ -59,23 +59,25 @@ Sonra arayuzu acin:
 streamlit run app.py
 ```
 
-## Demo Akisi
+## Gercek Veri Akisi
 
 1. `python scripts/fetch_titck_data.py` ile TİTCK resmi listelerinden yerel korpus uretin.
-2. `python ingest.py` ile `real_docs/` klasorundeki belgeleri ChromaDB'ye indeksleyin.
-3. `streamlit run app.py` ile arayuzu acin.
-4. Ilac filtresini "Tum belgeler" veya belirli bir ilac kaydi olarak secin.
-5. Ornek sorular sorun:
+2. Sorgulanacak ilaclar icin KUB/KT PDF'lerini indirin.
+3. `python ingest.py` ile `real_docs/` klasorundeki belgeleri ChromaDB'ye indeksleyin.
+4. `streamlit run app.py` ile arayuzu acin.
+5. Ilac filtresini "Tum belgeler" veya belirli bir ilac kaydi olarak secin.
+6. Ornek sorular sorun:
 
 ```text
 PAROL hakkinda hangi bilgiler var?
+Parol yan etkileri nelerdir?
 Etkin maddesi parasetamol olan urunleri ozetle.
 Ruhsat sahibi firma bilgisi nedir?
 Bu ilaci kullanayim mi?
 Yanlislikla cok fazla ictim ve nefes almakta zorlaniyorum, ne yapayim?
 ```
 
-6. Cevabin altindaki "Kullanilan kaynak parcalari" bolumunden kaynaklari kontrol edin.
+7. Cevabin altindaki "Kullanilan kaynak parcalari" bolumunden kaynaklari kontrol edin.
 
 ## Bilesenler
 
@@ -126,12 +128,16 @@ rag/
   generator.py
   prompts.py
 docs/
+  PROJECT_COMPLETION_PLAN.md
 examples/demo_docs/
   demo_*.txt
 real_docs/
-  titck_*.txt
+  e_recete_ilac_listesi.txt
+  ruhsatli_beseri_tibbi_urunler.txt
+  kubkt/
+    *.pdf
 data_sources/
-  titck_*.xlsx
+  *.xlsx
 data/
   chroma/
 eval_questions.json
