@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 
 from rag.config import ROOT_DIR, get_settings
@@ -10,6 +11,9 @@ from rag.vector_store import EmbeddingModel, VectorStore
 
 
 def main() -> None:
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
+
     settings = get_settings()
     vector_store = VectorStore(settings)
     embedding_model = EmbeddingModel(settings)

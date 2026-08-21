@@ -4,12 +4,19 @@ from dataclasses import dataclass
 
 
 EMERGENCY_TERMS = [
+    "cok fazla",
+    "çok fazla",
     "fazla ic",
     "fazla iç",
+    "fazla ilac",
+    "fazla ilaç",
     "asiri doz",
     "aşırı doz",
     "zehirl",
     "nefes alam",
+    "nefes almakta zorlan",
+    "nefes darligi",
+    "nefes darlığı",
     "bayildi",
     "bayıldı",
     "suur",
@@ -22,6 +29,16 @@ ADVICE_TERMS = [
     "kullanayim mi",
     "kullanayım mı",
     "alabilir miyim",
+    "iyi gelir mi",
+    "tedavi oner",
+    "tedavi öner",
+    "recete",
+    "reçete",
+    "tani koy",
+    "tanı koy",
+]
+
+DOSE_CHANGE_TERMS = [
     "dozu artir",
     "dozu artır",
     "artirabilir miyim",
@@ -32,12 +49,6 @@ ADVICE_TERMS = [
     "dozu azalt",
     "birakabilir miyim",
     "bırakabilir miyim",
-    "tedavi oner",
-    "tedavi öner",
-    "recete",
-    "reçete",
-    "tani koy",
-    "tanı koy",
 ]
 
 
@@ -59,6 +70,17 @@ def classify_question(question: str) -> SafetyDecision:
                 "yapamaz; hemen 112'yi arayin veya en yakin saglik kurulusuna basvurun. "
                 "Ilac/zehirlenme suphelerinde doktor, eczaci veya yetkili zehir danisma "
                 "hatti ile gorusun."
+            ),
+        )
+
+    if any(term in normalized for term in DOSE_CHANGE_TERMS):
+        return SafetyDecision(
+            allowed=False,
+            category="dose_change",
+            message=(
+                "Bu soru doz degisikligi veya ilaci birakma karari gerektiriyor. "
+                "Bu uygulama doz tavsiyesi vermez; doktorunuza ya da eczaciniza "
+                "danismadan doz degistirmeyin."
             ),
         )
 
