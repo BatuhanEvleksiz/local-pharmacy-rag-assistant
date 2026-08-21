@@ -136,6 +136,9 @@ rag/
   generator.py
   prompts.py
 docs/
+  ARCHITECTURE.md
+  DEMO_SCRIPT.md
+  FINAL_REPORT.md
   PROJECT_COMPLETION_PLAN.md
 examples/demo_docs/
   demo_*.txt
