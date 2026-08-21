@@ -53,6 +53,13 @@ python scripts/fetch_kubkt_docs.py --query "PAROL 500 MG TABLET" --limit 1 --typ
 python ingest.py
 ```
 
+Yaygin ilac listesiyle toplu KUB/KT indirmek icin:
+
+```bash
+python scripts/fetch_kubkt_docs.py --query-file resources/kubkt_seed_products.txt --limit 1 --types both
+python ingest.py
+```
+
 Sonra arayuzu acin:
 
 ```bash
@@ -92,6 +99,7 @@ Yanlislikla cok fazla ictim ve nefes almakta zorlaniyorum, ne yapayim?
 - `evaluate.py`: Test sorulari icin retrieval ve safety smoke report.
 - `scripts/fetch_titck_data.py`: TİTCK resmi XLSX listelerini indirir ve `real_docs/` icin metin korpusu uretir.
 - `scripts/fetch_kubkt_docs.py`: Belirli urunler icin TİTCK KUB/KT PDF'lerini indirir.
+- `resources/kubkt_seed_products.txt`: Demo icin toplu indirilecek yaygin ilac sorgulari.
 
 ## Degerlendirme
 

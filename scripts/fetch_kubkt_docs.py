@@ -71,8 +71,8 @@ def datatables_payload(token: str, query: str, limit: int) -> dict[str, str]:
     return payload
 
 
-def search_kubkt(query: str, limit: int) -> list[dict[str, str]]:
-    session = requests.Session()
+def search_kubkt(query: str, limit: int, session: requests.Session | None = None) -> list[dict[str, str]]:
+    session = session or requests.Session()
     page_response = session.get(KUBKT_PAGE_URL, timeout=30)
     page_response.raise_for_status()
     token = extract_token(page_response.text)
@@ -99,13 +99,62 @@ def download_pdf(url: str, output_path: Path) -> None:
     output_path.write_bytes(response.content)
 
 
+def read_queries(query_file: Path) -> list[str]:
+    queries: list[str] = []
+    for line in query_file.read_text(encoding="utf-8").splitlines():
+        cleaned = line.strip()
+        if cleaned and not cleaned.startswith("#"):
+            queries.append(cleaned)
+    return queries
+
+
+def download_for_query(
+    query: str,
+    limit: int,
+    document_types: str,
+    output_dir: Path,
+    session: requests.Session,
+) -> int:
+    rows = search_kubkt(query, limit, session=session)
+    logger.info("Found %s KUB/KT rows for query: %s", len(rows), query)
+    saved_count = 0
+    for row in rows:
+        product_name = row.get("name", "unknown_product")
+        documents: list[tuple[str, str | None]] = []
+        if document_types in {"kub", "both"}:
+            documents.append(("kub", extract_pdf_url(row.get("documentPathKub", ""))))
+        if document_types in {"kt", "both"}:
+            documents.append(("kt", extract_pdf_url(row.get("documentPathKt", ""))))
+
+        for doc_type, url in documents:
+            if not url:
+                logger.warning("No %s PDF found for %s", doc_type.upper(), product_name)
+                continue
+            filename = f"{safe_filename(product_name)}_{doc_type}.pdf"
+            output_path = output_dir / filename
+            if output_path.exists():
+                logger.info("Already exists: %s", output_path)
+                continue
+            logger.info("Downloading %s for %s", doc_type.upper(), product_name)
+            download_pdf(url, output_path)
+            saved_count += 1
+            logger.info("Saved: %s", output_path)
+    return saved_count
+
+
 def main() -> None:
     configure_logging()
     parser = argparse.ArgumentParser(
-        description="Download official TITCK KUB/KT PDFs for a product query."
+        description="Download official TITCK KUB/KT PDFs for one product query or a query list."
     )
-    parser.add_argument("--query", required=True, help="Product search query, e.g. PAROL 500 MG TABLET.")
-    parser.add_argument("--limit", type=int, default=5, help="Maximum product rows to download.")
+    query_group = parser.add_mutually_exclusive_group(required=True)
+    query_group.add_argument("--query", help="Product search query, e.g. PAROL 500 MG TABLET.")
+    query_group.add_argument(
+        "--query-file",
+        type=Path,
+        help="Text file with one product search query per line. Lines starting with # are ignored.",
+    )
+    parser.add_argument("--limit", type=int, default=5, help="Maximum product rows to download per query.")
     parser.add_argument(
         "--types",
         choices=["kub", "kt", "both"],
@@ -120,25 +169,18 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    rows = search_kubkt(args.query, args.limit)
-    logger.info("Found %s KUB/KT rows for query: %s", len(rows), args.query)
-    for row in rows:
-        product_name = row.get("name", "unknown_product")
-        documents: list[tuple[str, str | None]] = []
-        if args.types in {"kub", "both"}:
-            documents.append(("kub", extract_pdf_url(row.get("documentPathKub", ""))))
-        if args.types in {"kt", "both"}:
-            documents.append(("kt", extract_pdf_url(row.get("documentPathKt", ""))))
-
-        for doc_type, url in documents:
-            if not url:
-                logger.warning("No %s PDF found for %s", doc_type.upper(), product_name)
-                continue
-            filename = f"{safe_filename(product_name)}_{doc_type}.pdf"
-            output_path = args.output_dir / filename
-            logger.info("Downloading %s for %s", doc_type.upper(), product_name)
-            download_pdf(url, output_path)
-            logger.info("Saved: %s", output_path)
+    queries = [args.query] if args.query else read_queries(args.query_file)
+    session = requests.Session()
+    total_saved = 0
+    for query in queries:
+        total_saved += download_for_query(
+            query=query,
+            limit=args.limit,
+            document_types=args.types,
+            output_dir=args.output_dir,
+            session=session,
+        )
+    logger.info("Finished. Saved %s new PDF files for %s queries.", total_saved, len(queries))
 
 
 if __name__ == "__main__":
