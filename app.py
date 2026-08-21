@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import subprocess
+import sys
+
 import streamlit as st
 
 from rag.config import get_settings
@@ -41,6 +44,87 @@ def render_sources(chunks):
             st.caption(chunk.text[:900] + ("..." if len(chunk.text) > 900 else ""))
 
 
+def run_project_command(args: list[str], timeout: int = 900) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        [sys.executable, *args],
+        cwd=get_settings().data_dir.parent,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        timeout=timeout,
+        check=False,
+    )
+
+
+def render_command_result(result: subprocess.CompletedProcess[str]) -> None:
+    output = "\n".join(part for part in [result.stdout, result.stderr] if part.strip())
+    if result.returncode == 0:
+        st.success("Islem tamamlandi.")
+    else:
+        st.error(f"Islem hata kodu ile bitti: {result.returncode}")
+    if output:
+        with st.expander("Komut ciktisi", expanded=result.returncode != 0):
+            st.code(output[-6000:], language="text")
+
+
+def render_data_tools() -> None:
+    st.subheader("Veri islemleri")
+    with st.form("kubkt_download_form"):
+        mode = st.segmented_control(
+            "Indirme modu",
+            ["Tek ilac", "Seed listesi"],
+            default="Tek ilac",
+            key="kubkt_mode",
+        )
+        query = st.text_input(
+            "Ilac sorgusu",
+            value="PAROL 500 MG TABLET",
+            disabled=mode == "Seed listesi",
+        )
+        document_type = st.selectbox("Belge tipi", ["both", "kt", "kub"], index=0)
+        submitted = st.form_submit_button("KUB/KT indir", type="primary")
+
+    if submitted:
+        if mode == "Seed listesi":
+            args = [
+                "scripts/fetch_kubkt_docs.py",
+                "--query-file",
+                "resources/kubkt_seed_products.txt",
+                "--limit",
+                "1",
+                "--types",
+                document_type,
+            ]
+        else:
+            if not query.strip():
+                st.error("Ilac sorgusu bos olamaz.")
+                return
+            args = [
+                "scripts/fetch_kubkt_docs.py",
+                "--query",
+                query.strip(),
+                "--limit",
+                "1",
+                "--types",
+                document_type,
+            ]
+        with st.status("TITCK KUB/KT PDF'leri indiriliyor...", expanded=True) as status:
+            result = run_project_command(args, timeout=420)
+            render_command_result(result)
+            status.update(state="complete" if result.returncode == 0 else "error")
+
+    if st.button("Belgeleri yeniden indeksle", type="secondary"):
+        with st.status("Belgeler ChromaDB'ye yeniden indeksleniyor...", expanded=True) as status:
+            result = run_project_command(["ingest.py"], timeout=1200)
+            render_command_result(result)
+            if result.returncode == 0:
+                load_runtime.clear()
+                status.update(state="complete")
+                st.rerun()
+            status.update(state="error")
+
+
 def build_local_fallback_answer(question, chunks) -> str:
     excerpts = []
     for chunk in filter_chunks_by_query_terms(question, chunks)[:2]:
@@ -74,8 +158,8 @@ def main() -> None:
         drugs = ["Tum belgeler"] + list_drugs(vector_store)
         selected_drug = st.selectbox("Ilac filtresi", drugs, index=0)
         st.divider()
-        st.write("Veritabani bos ise once terminalden calistirin:")
-        st.code("python ingest.py", language="bash")
+        render_data_tools()
+        st.divider()
         st.warning(
             "Bu uygulama bilgi amaclidir. Saglik kararlariniz icin doktor veya eczaciya danisin."
         )
@@ -170,6 +254,4 @@ def main() -> None:
             {"role": "assistant", "content": answer, "sources": chunks}
         )
 
-
-if __name__ == "__main__":
-    main()
+main()
