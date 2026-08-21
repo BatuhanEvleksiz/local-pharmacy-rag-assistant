@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from dataclasses import asdict
 
 import chromadb
@@ -10,14 +11,34 @@ from rag.chunker import Chunk
 from rag.config import Settings
 
 
+logger = logging.getLogger(__name__)
+
+
 class EmbeddingModel:
     def __init__(self, settings: Settings) -> None:
         try:
-            self.model = SentenceTransformer(settings.embedding_model)
+            self.model = self._load(settings.embedding_model)
             self.model_name = settings.embedding_model
-        except Exception:
-            self.model = SentenceTransformer(settings.fallback_embedding_model)
+        except Exception as primary_error:
+            logger.warning(
+                "Could not load embedding model %s: %s",
+                settings.embedding_model,
+                primary_error,
+            )
+            self.model = self._load(settings.fallback_embedding_model)
             self.model_name = settings.fallback_embedding_model
+
+    @staticmethod
+    def _load(model_name: str) -> SentenceTransformer:
+        try:
+            return SentenceTransformer(model_name, local_files_only=True)
+        except Exception as local_error:
+            logger.info(
+                "Embedding model %s was not fully available in local cache: %s",
+                model_name,
+                local_error,
+            )
+            return SentenceTransformer(model_name)
 
     def encode(self, texts: list[str]) -> list[list[float]]:
         return self.model.encode(texts, normalize_embeddings=True).tolist()
