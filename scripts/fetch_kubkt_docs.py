@@ -88,6 +88,8 @@ def search_kubkt(query: str, limit: int, session: requests.Session | None = None
         timeout=60,
     )
     response.raise_for_status()
+    if response.apparent_encoding:
+        response.encoding = response.apparent_encoding
     payload = response.json()
     return payload.get("data", [])
 
