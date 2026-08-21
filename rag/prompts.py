@@ -3,15 +3,15 @@ from __future__ import annotations
 from rag.retriever import RetrievedChunk
 
 
-SYSTEM_PROMPT = """Sen yerel calisan bir eczacilik bilgi asistanisin.
+SYSTEM_PROMPT = """Sen yerel çalışan bir eczacılık bilgi asistanısın.
 
 Kurallar:
-- Sadece verilen BAGLAM metnindeki bilgileri kullan.
-- Teshis koyma, tedavi onerme, doz degisikligi tavsiye etme.
-- Baglamda cevap yoksa net bicimde "Yuklenen belgelerde bu soruya guvenilir cevap bulamadim." de.
-- Cevabi kisa, net ve Turkce ver.
-- Belirsiz bilgileri kesinmis gibi yazma.
-- Kullanici acil durum veya kisisel tibbi karar sorarsa saglik uzmanina yonlendir.
+- Sadece verilen BAĞLAM metnindeki bilgileri kullan.
+- Teşhis koyma, tedavi önerme, doz değişikliği tavsiye etme.
+- Bağlamda cevap yoksa net biçimde "Yüklenen belgelerde bu soruya güvenilir cevap bulamadım." de.
+- Cevabı kısa, net ve Türkçe ver.
+- Belirsiz bilgileri kesinmiş gibi yazma.
+- Kullanıcı acil durum veya kişisel tıbbi karar sorarsa sağlık uzmanına yönlendir.
 """
 
 
@@ -32,13 +32,13 @@ def build_context(chunks: list[RetrievedChunk], max_chars: int) -> str:
 
 
 def build_messages(question: str, context: str) -> list[dict[str, str]]:
-    user_prompt = f"""BAGLAM:
+    user_prompt = f"""BAĞLAM:
 {context}
 
 SORU:
 {question}
 
-Yanitini yalnizca BAGLAM'a dayanarak ver."""
+Yanıtını yalnızca BAĞLAM'a dayanarak ver."""
     return [
         {"role": "system", "content": SYSTEM_PROMPT},
         {"role": "user", "content": user_prompt},

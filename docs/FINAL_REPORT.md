@@ -2,11 +2,11 @@
 
 ## Proje Ozeti
 
-Yerel Eczacilik RAG Asistani, eczacilik alaninda resmi belgeye dayali soru-cevap deneyimi sunan lokal bir RAG projesidir. Sistem TİTCK resmi listelerini ve secili ilaclarin KUB/KT PDF'lerini yerelde indeksler, kullanici sorusuna en ilgili kaynak parcalarini bulur ve Foundry Local aciksa kaynakli cevap uretir.
+Yerel Eczacılık RAG Asistanı, eczacılık alanında resmi belgeye dayalı soru-cevap deneyimi sunan lokal bir RAG projesidir. Sistem TİTCK resmi listelerini ve seçili ilaçların KÜB/KT PDF'lerini yerelde indeksler, kullanıcı sorusuna en ilgili kaynak parçalarını bulur ve Foundry Local açıksa kaynaklı cevap üretir.
 
 ## Problem
 
-Ilac bilgisi sorularinda guvenilir kaynak, izlenebilirlik ve guvenlik kritik onemdedir. Genel LLM cevaplari yan etki, doz veya kullanim gibi konularda uydurma bilgi uretebilir. Bu proje, cevaplari yerel resmi belgelere baglayarak bu riski azaltmayi hedefler.
+İlaç bilgisi sorularında güvenilir kaynak, izlenebilirlik ve güvenlik kritik önemdedir. Genel LLM cevapları yan etki, doz veya kullanım gibi konularda uydurma bilgi üretebilir. Bu proje, cevapları yerel resmi belgelere bağlayarak bu riski azaltmayı hedefler.
 
 ## Cozum
 
@@ -14,7 +14,7 @@ Ilac bilgisi sorularinda guvenilir kaynak, izlenebilirlik ve guvenlik kritik one
 - Urun bazli KUB/KT PDF'leri indirilebilir.
 - Belgeler bolum farkindalikli chunk'lara ayrilir.
 - `intfloat/multilingual-e5-small` embedding modeli ile ChromaDB'ye kaydedilir.
-- Retrieval katmani ilac adi, sorgu terimi ve bolum ipuclariyla skorlamayi iyilestirir.
+- Retrieval katmanı ilaç adı, sorgu terimi ve bölüm ipuçlarıyla skorlamayı iyileştirir.
 - Safety guardrail doz, kisisel tedavi ve acil durum sorularini cevap uretiminden once yakalar.
 - Foundry Local ulasilamazsa kullaniciya kaynak parcasi ozeti verilir.
 
@@ -32,14 +32,14 @@ Ilac bilgisi sorularinda guvenilir kaynak, izlenebilirlik ve guvenlik kritik one
 
 - GitHub repo public olarak olusturuldu ve adim adim commit'lendi.
 - Resmi liste modu calisiyor.
-- Seed listedeki yaygin ilaclar icin KUB/KT indirme destegi eklendi.
+- Seed listedeki yaygın ilaçlar için KÜB/KT indirme desteği eklendi.
 - Yerelde 44 belge ve 4767 chunk indekslendi.
 - `evaluate.py` gercek korpus sorulariyla smoke test uretiyor.
 - Streamlit arayuzunde veri indirme ve yeniden indeksleme paneli var.
 
 ## Sinirlar
 
-- Tum ilaclarin tum KUB/KT PDF'leri otomatik indirilmis degil; seed liste ile baslandi.
+- Tüm ilaçların tüm KÜB/KT PDF'leri otomatik indirilmiş değil; seed liste ile başlandı.
 - Foundry Local modeli calismiyorsa uretken cevap yerine kaynak parcasi fallback'i gosterilir.
 - Bu sistem karar destek veya teshis sistemi degildir; yalnizca belge ozeti ve kaynakli bilgi verir.
 

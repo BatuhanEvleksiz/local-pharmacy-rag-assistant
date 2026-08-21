@@ -4,8 +4,8 @@ Bu belge, Yerel Eczacilik RAG Asistani'nin staj demosu icin "tamam" sayilmasi ge
 
 ## Kabul Kriterleri
 
-- Resmi TİTCK ilac listeleri yerel korpusa donusturulebilmeli.
-- Secili yaygin ilaclar icin KUB/KT PDF'leri indirilebilmeli.
+- Resmi TİTCK ilaç listeleri yerel korpusa dönüştürülebilmeli.
+- Seçili yaygın ilaçlar için KÜB/KT PDF'leri indirilebilmeli.
 - KUB/KT metinleri yan etki, kullanim, saklama ve uyarilar gibi klinik bilgi sorularinda kaynak olarak donebilmeli.
 - Sistem, sadece liste kaydi olan durumlarda yan etki/doz gibi klinik detaylari uydurmadan reddedebilmeli.
 - Foundry Local kapaliyken uygulama hata vermeden kaynak parcasi ozeti gosterebilmeli.
@@ -16,8 +16,8 @@ Bu belge, Yerel Eczacilik RAG Asistani'nin staj demosu icin "tamam" sayilmasi ge
 ## Adimlar
 
 1. Dokumantasyon ve bitis kriterlerini netlestir.
-2. KUB/KT indiriciyi coklu ilac listesiyle calisacak hale getir.
-3. Yaygin ilaclardan olusan seed listesini ekle.
+2. KÜB/KT indiriciyi çoklu ilaç listesiyle çalışacak hale getir.
+3. Yaygın ilaçlardan oluşan seed listesini ekle.
 4. Gercek veri odakli degerlendirme sorularini guncelle.
 5. Streamlit'e KUB/KT indirme ve yeniden indeksleme akisina yardimci panel ekle.
 6. Foundry Local ile uctan uca demo testi yap.

@@ -1,6 +1,6 @@
-# Yerel Eczacilik RAG Asistani
+# Yerel Eczacılık RAG Asistanı
 
-Bu proje, Microsoft Foundry Local ile yerelde calisan bir RAG asistanidir. Amac, yuklenen ilac kullanma talimati/prospektus dokumanlarindan kaynakli ve guvenli bilgi yanitlari uretmektir.
+Bu proje, Microsoft Foundry Local ile yerelde çalışan bir RAG asistanıdır. Amaç, yüklenen ilaç kullanma talimatı/prospektüs dokümanlarından kaynaklı ve güvenli bilgi yanıtları üretmektir.
 
 ## Mimari
 
@@ -46,14 +46,14 @@ Sonra belgeleri indeksleyin:
 python ingest.py
 ```
 
-Belirli bir ilacin KUB/KT PDF'lerini eklemek icin:
+Belirli bir ilacın KÜB/KT PDF'lerini eklemek için:
 
 ```bash
 python scripts/fetch_kubkt_docs.py --query "PAROL 500 MG TABLET" --limit 1 --types both
 python ingest.py
 ```
 
-Yaygin ilac listesiyle toplu KUB/KT indirmek icin:
+Yaygın ilaç listesiyle toplu KÜB/KT indirmek için:
 
 ```bash
 python scripts/fetch_kubkt_docs.py --query-file resources/kubkt_seed_products.txt --limit 1 --types both
@@ -69,10 +69,10 @@ streamlit run app.py
 ## Gercek Veri Akisi
 
 1. `python scripts/fetch_titck_data.py` ile TİTCK resmi listelerinden yerel korpus uretin.
-2. Sorgulanacak ilaclar icin KUB/KT PDF'lerini indirin.
+2. Sorgulanacak ilaçlar için KÜB/KT PDF'lerini indirin.
 3. `python ingest.py` ile `real_docs/` klasorundeki belgeleri ChromaDB'ye indeksleyin.
 4. `streamlit run app.py` ile arayuzu acin.
-5. Ilac filtresini "Tum belgeler" veya belirli bir ilac kaydi olarak secin.
+5. İlaç filtresini "Tüm belgeler" veya belirli bir ilaç kaydı olarak seçin.
 6. Ornek sorular sorun:
 
 ```text
@@ -80,7 +80,7 @@ PAROL hakkinda hangi bilgiler var?
 Parol yan etkileri nelerdir?
 Etkin maddesi parasetamol olan urunleri ozetle.
 Ruhsat sahibi firma bilgisi nedir?
-Bu ilaci kullanayim mi?
+Bu ilacı kullanayım mı?
 Yanlislikla cok fazla ictim ve nefes almakta zorlaniyorum, ne yapayim?
 ```
 
@@ -91,15 +91,15 @@ Yanlislikla cok fazla ictim ve nefes almakta zorlaniyorum, ne yapayim?
 - `rag/document_loader.py`: PDF, TXT ve Markdown belgelerini okur.
 - `rag/chunker.py`: Metni bolum farkindalikli parcalara ayirir.
 - `rag/vector_store.py`: Embedding modeli ve ChromaDB persistent store katmanini yonetir.
-- `rag/retriever.py`: Semantic search, ilac filtresi ve bolum bazli skor artirimi yapar.
+- `rag/retriever.py`: Semantic search, ilaç filtresi ve bölüm bazlı skor artırımı yapar.
 - `rag/safety.py`: Acil durum, doz degisikligi ve kisisel tibbi karar sorularini yakalar.
 - `rag/generator.py`: Foundry Local OpenAI uyumlu endpoint uzerinden cevap uretir.
 - `app.py`: Streamlit sohbet arayuzu.
 - `ingest.py`: Belgeleri indeksleme komutu.
 - `evaluate.py`: Test sorulari icin retrieval ve safety smoke report.
 - `scripts/fetch_titck_data.py`: TİTCK resmi XLSX listelerini indirir ve `real_docs/` icin metin korpusu uretir.
-- `scripts/fetch_kubkt_docs.py`: Belirli urunler icin TİTCK KUB/KT PDF'lerini indirir.
-- `resources/kubkt_seed_products.txt`: Demo icin toplu indirilecek yaygin ilac sorgulari.
+- `scripts/fetch_kubkt_docs.py`: Belirli ürünler için TİTCK KÜB/KT PDF'lerini indirir.
+- `resources/kubkt_seed_products.txt`: Demo için toplu indirilecek yaygın ilaç sorguları.
 
 ## Degerlendirme
 

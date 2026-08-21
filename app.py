@@ -18,12 +18,12 @@ from rag.vector_store import EmbeddingModel, VectorStore
 
 
 st.set_page_config(
-    page_title="Yerel Ilac Bilgi Asistani",
+    page_title="Yerel İlaç Bilgi Asistanı",
     layout="wide",
 )
 
 
-@st.cache_resource(show_spinner="Modeller ve vektor veritabani hazirlaniyor...")
+@st.cache_resource(show_spinner="Modeller ve vektör veritabanı hazırlanıyor...")
 def load_runtime():
     settings = get_settings()
     embedding_model = EmbeddingModel(settings)
@@ -35,7 +35,7 @@ def load_runtime():
 def render_sources(chunks):
     if not chunks:
         return
-    with st.expander("Kullanilan kaynak parcalari", expanded=False):
+    with st.expander("Kullanılan kaynak parçaları", expanded=False):
         for idx, chunk in enumerate(chunks, start=1):
             st.markdown(
                 f"**{idx}. {chunk.drug_name}** - `{chunk.section}` - "
@@ -60,25 +60,25 @@ def run_project_command(args: list[str], timeout: int = 900) -> subprocess.Compl
 def render_command_result(result: subprocess.CompletedProcess[str]) -> None:
     output = "\n".join(part for part in [result.stdout, result.stderr] if part.strip())
     if result.returncode == 0:
-        st.success("Islem tamamlandi.")
+        st.success("İşlem tamamlandı.")
     else:
-        st.error(f"Islem hata kodu ile bitti: {result.returncode}")
+        st.error(f"İşlem hata kodu ile bitti: {result.returncode}")
     if output:
-        with st.expander("Komut ciktisi", expanded=result.returncode != 0):
+        with st.expander("Komut çıktısı", expanded=result.returncode != 0):
             st.code(output[-6000:], language="text")
 
 
 def render_data_tools() -> None:
-    st.subheader("Veri islemleri")
+    st.subheader("Veri işlemleri")
     with st.form("kubkt_download_form"):
         mode = st.segmented_control(
-            "Indirme modu",
-            ["Tek ilac", "Seed listesi"],
-            default="Tek ilac",
+            "İndirme modu",
+            ["Tek ilaç", "Seed listesi"],
+            default="Tek ilaç",
             key="kubkt_mode",
         )
         query = st.text_input(
-            "Ilac sorgusu",
+            "İlaç sorgusu",
             value="PAROL 500 MG TABLET",
             disabled=mode == "Seed listesi",
         )
@@ -98,7 +98,7 @@ def render_data_tools() -> None:
             ]
         else:
             if not query.strip():
-                st.error("Ilac sorgusu bos olamaz.")
+                st.error("İlaç sorgusu boş olamaz.")
                 return
             args = [
                 "scripts/fetch_kubkt_docs.py",
@@ -133,35 +133,35 @@ def build_local_fallback_answer(question, chunks) -> str:
             + ("..." if len(chunk.text) > 420 else "")
         )
     return (
-        "Yerel LLM endpoint'ine ulasilamadi, bu yuzden uretken cevap yerine "
-        "bulunan kaynak parcalarinin kisa bir ozetini gosteriyorum:\n\n"
+        "Yerel LLM endpoint'ine ulaşılamadı, bu yüzden üretken cevap yerine "
+        "bulunan kaynak parçalarının kısa bir özetini gösteriyorum:\n\n"
         + "\n\n".join(excerpts)
         + "\n\nNot: Foundry Local'i baslattiktan sonra ayni soruyu tekrar sorarsan "
-        "model kaynaklara dayali nihai yaniti uretebilir."
+        "model kaynaklara dayalı nihai yanıtı üretebilir."
     )
 
 
 def main() -> None:
     settings, embedding_model, vector_store, generator = load_runtime()
 
-    st.title("Yerel Ilac Bilgi Asistani")
+    st.title("Yerel İlaç Bilgi Asistanı")
     st.caption(
-        "Yuklenen prospektus/kullanma talimati metinlerinden kaynakli bilgi verir. "
-        "Teshis, tedavi veya doz tavsiyesi vermez."
+        "Yüklenen prospektüs/kullanma talimatı metinlerinden kaynaklı bilgi verir. "
+        "Teşhis, tedavi veya doz tavsiyesi vermez."
     )
 
     with st.sidebar:
-        st.header("Bilgi tabani")
+        st.header("Bilgi tabanı")
         count = vector_store.count()
-        st.metric("Indeksli parca", count)
-        st.caption(f"Belge klasoru: `{settings.docs_dir}`")
-        drugs = ["Tum belgeler"] + list_drugs(vector_store)
-        selected_drug = st.selectbox("Ilac filtresi", drugs, index=0)
+        st.metric("İndeksli parça", count)
+        st.caption(f"Belge klasörü: `{settings.docs_dir}`")
+        drugs = ["Tüm belgeler"] + list_drugs(vector_store)
+        selected_drug = st.selectbox("İlaç filtresi", drugs, index=0)
         st.divider()
         render_data_tools()
         st.divider()
         st.warning(
-            "Bu uygulama bilgi amaclidir. Saglik kararlariniz icin doktor veya eczaciya danisin."
+            "Bu uygulama bilgi amaçlıdır. Sağlık kararlarınız için doktor veya eczacıya danışın."
         )
 
     if "messages" not in st.session_state:
@@ -173,7 +173,7 @@ def main() -> None:
             if message.get("sources"):
                 render_sources(message["sources"])
 
-    question = st.chat_input("Orn: Bu ilacin olasi yan etkileri nelerdir?")
+    question = st.chat_input("Örn: Bu ilacın olası yan etkileri nelerdir?")
     if not question:
         return
 
@@ -184,7 +184,7 @@ def main() -> None:
     with st.chat_message("assistant"):
         decision = classify_question(question)
         if not decision.allowed:
-            answer = decision.message or "Bu soruya guvenli sekilde yanit veremem."
+            answer = decision.message or "Bu soruya güvenli şekilde yanıt veremem."
             st.markdown(answer)
             st.session_state.messages.append(
                 {"role": "assistant", "content": answer, "sources": []}
@@ -192,14 +192,14 @@ def main() -> None:
             return
 
         if vector_store.count() == 0:
-            answer = "Henuz indekslenmis belge yok. Once `python ingest.py` calistirin."
+            answer = "Henüz indekslenmiş belge yok. Önce `python ingest.py` çalıştırın."
             st.markdown(answer)
             st.session_state.messages.append(
                 {"role": "assistant", "content": answer, "sources": []}
             )
             return
 
-        with st.spinner("Belgelerde ilgili kisimlar araniyor..."):
+        with st.spinner("Belgelerde ilgili kısımlar aranıyor..."):
             chunks = retrieve(
                 question=question,
                 settings=settings,
@@ -210,9 +210,9 @@ def main() -> None:
 
         if not chunks or chunks[0].score < settings.min_relevance_score:
             answer = (
-                "Yuklenen belgelerde bu soruya guvenilir cevap bulamadim.\n\n"
-                "Not: Bu uygulama bilgi amaclidir; doktor veya eczaci danismanliginin "
-                "yerine gecmez."
+                "Yüklenen belgelerde bu soruya güvenilir cevap bulamadım.\n\n"
+                "Not: Bu uygulama bilgi amaçlıdır; doktor veya eczacı danışmanlığının "
+                "yerine geçmez."
             )
             st.markdown(answer)
             render_sources(chunks)
@@ -243,7 +243,7 @@ def main() -> None:
             return
 
         try:
-            with st.spinner("Yerel model yanit uretuyor..."):
+            with st.spinner("Yerel model yanıt üretiyor..."):
                 answer = generator.answer(question, chunks)
         except Exception:
             answer = build_local_fallback_answer(question, chunks)

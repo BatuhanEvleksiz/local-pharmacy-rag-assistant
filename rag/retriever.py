@@ -92,7 +92,7 @@ def retrieve(
 ) -> list[RetrievedChunk]:
     query_embedding = embedding_model.encode([question])[0]
     where = None
-    if drug_filter and drug_filter != "Tum belgeler":
+    if drug_filter and drug_filter != "Tüm belgeler":
         where = {"drug_name": drug_filter}
 
     result = vector_store.collection.query(
@@ -122,7 +122,7 @@ def retrieve(
             0.2,
             sum(0.05 for term in terms if term in text_tokens),
         )
-        if drug_filter and drug_filter != "Tum belgeler":
+        if drug_filter and drug_filter != "Tüm belgeler":
             score += 0.04
 
         chunks.append(

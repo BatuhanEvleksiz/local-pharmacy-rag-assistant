@@ -1,6 +1,6 @@
 # Mimari
 
-Yerel Eczacilik RAG Asistani, resmi TİTCK kaynaklarini yerelde isleyip ChromaDB uzerinden geri getirme yapan ve cevabi Foundry Local LLM ile uretebilen bir RAG uygulamasidir.
+Yerel Eczacılık RAG Asistanı, resmi TİTCK kaynaklarını yerelde işleyip ChromaDB üzerinden geri getirme yapan ve cevabı Foundry Local LLM ile üretebilen bir RAG uygulamasıdır.
 
 ## Akis
 
@@ -29,7 +29,7 @@ flowchart LR
 - Belge okuma: `rag/document_loader.py`, PDF/TXT/Markdown kaynaklarini standart belge nesnesine cevirir.
 - Chunking: `rag/chunker.py`, uzun metinleri bolum farkindalikli parcalara ayirir.
 - Vektor veritabani: `rag/vector_store.py`, ChromaDB kalici koleksiyonu ve embedding modelini yonetir.
-- Retrieval: `rag/retriever.py`, semantic arama, ilac filtresi ve sorgu terimi skor artirimi yapar.
+- Retrieval: `rag/retriever.py`, semantic arama, ilaç filtresi ve sorgu terimi skor artırımı yapar.
 - Kapsam kontrolu: `rag/coverage.py`, sadece liste kaydi olan durumlarda klinik detay uydurmayi engeller.
 - Guvenlik: `rag/safety.py`, acil durum, doz degisikligi ve kisisel tibbi tavsiye sorularini yakalar.
 - Uretim: `rag/generator.py`, Foundry Local OpenAI uyumlu endpoint'ine baglanir.
@@ -38,9 +38,9 @@ flowchart LR
 ## Veri Modlari
 
 - Resmi liste modu: Tum ruhsatli urun ve e-recete listeleri uzerinden urun adi, barkod, etkin madde, ATC, firma ve ruhsat bilgisi gibi kayit sorulari cevaplanir.
-- KUB/KT modu: Secili ilaclarin resmi KUB/KT PDF'leri eklendiginde yan etki, saklama, kullanim uyarilari ve benzeri prospektus bilgileri cevaplanir.
+- KÜB/KT modu: Seçili ilaçların resmi KÜB/KT PDF'leri eklendiğinde yan etki, saklama, kullanım uyarıları ve benzeri prospektüs bilgileri cevaplanır.
 - LLM kapali modu: Foundry Local endpoint'i kapaliyken uygulama hata vermek yerine bulunan kaynak parcasi ozetlerini gosterir.
 
 ## Guvenlik Sinirlari
 
-Uygulama teshis, tedavi, doz degisikligi veya kisisel ilac kullanma karari vermez. Acil durum ifadelerinde 112 veya en yakin saglik kurulusuna yonlendirir. Cevaplar sadece yuklenen belgelerde bulunan metinlere dayalidir.
+Uygulama teşhis, tedavi, doz değişikliği veya kişisel ilaç kullanma kararı vermez. Acil durum ifadelerinde 112 veya en yakın sağlık kuruluşuna yönlendirir. Cevaplar sadece yüklenen belgelerde bulunan metinlere dayalıdır.

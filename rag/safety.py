@@ -66,10 +66,10 @@ def classify_question(question: str) -> SafetyDecision:
             allowed=False,
             category="emergency",
             message=(
-                "Bu bir acil saglik durumu olabilir. Bu uygulama acil durum yonetimi "
-                "yapamaz; hemen 112'yi arayin veya en yakin saglik kurulusuna basvurun. "
-                "Ilac/zehirlenme suphelerinde doktor, eczaci veya yetkili zehir danisma "
-                "hatti ile gorusun."
+                "Bu bir acil sağlık durumu olabilir. Bu uygulama acil durum yönetimi "
+                "yapamaz; hemen 112'yi arayın veya en yakın sağlık kuruluşuna başvurun. "
+                "İlaç/zehirlenme şüphelerinde doktor, eczacı veya yetkili zehir danışma "
+                "hattı ile görüşün."
             ),
         )
 
@@ -78,9 +78,9 @@ def classify_question(question: str) -> SafetyDecision:
             allowed=False,
             category="dose_change",
             message=(
-                "Bu soru doz degisikligi veya ilaci birakma karari gerektiriyor. "
-                "Bu uygulama doz tavsiyesi vermez; doktorunuza ya da eczaciniza "
-                "danismadan doz degistirmeyin."
+                "Bu soru doz değişikliği veya ilacı bırakma kararı gerektiriyor. "
+                "Bu uygulama doz tavsiyesi vermez; doktorunuza ya da eczacınıza "
+                "danışmadan doz değiştirmeyin."
             ),
         )
 
@@ -89,10 +89,10 @@ def classify_question(question: str) -> SafetyDecision:
             allowed=False,
             category="medical_advice",
             message=(
-                "Bu soru kisisel tibbi karar veya tedavi tavsiyesi gerektiriyor. "
-                "Ben yalnizca yuklenen belgelerdeki bilgileri ozetleyebilirim; ilaci "
-                "kullanma, birakma veya doz degistirme karari icin doktorunuza ya da "
-                "eczaciniza danisin."
+                "Bu soru kişisel tıbbi karar veya tedavi tavsiyesi gerektiriyor. "
+                "Ben yalnızca yüklenen belgelerdeki bilgileri özetleyebilirim; ilacı "
+                "kullanma, bırakma veya doz değiştirme kararı için doktorunuza ya da "
+                "eczacınıza danışın."
             ),
         )
 
@@ -101,6 +101,6 @@ def classify_question(question: str) -> SafetyDecision:
 
 def safety_footer() -> str:
     return (
-        "\n\nNot: Bu yanit yalnizca yuklenen belge metinlerine dayali bilgi amaclidir; "
-        "doktor veya eczaci danismanliginin yerine gecmez."
+        "\n\nNot: Bu yanıt yalnızca yüklenen belge metinlerine dayalı bilgi amaçlıdır; "
+        "doktor veya eczacı danışmanlığının yerine geçmez."
     )
