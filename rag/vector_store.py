@@ -46,23 +46,34 @@ class EmbeddingModel:
 
 class VectorStore:
     def __init__(self, settings: Settings) -> None:
+        self.collection_name = settings.collection_name
         settings.chroma_dir.mkdir(parents=True, exist_ok=True)
         self.client = chromadb.PersistentClient(
             path=str(settings.chroma_dir),
             settings=ChromaSettings(anonymized_telemetry=False),
         )
-        self.collection = self.client.get_or_create_collection(
-            name=settings.collection_name,
+        self._collection_metadata = {"hnsw:space": "cosine"}
+
+    @property
+    def collection(self):
+        return self.client.get_or_create_collection(
+            name=self.collection_name,
+            metadata=self._collection_metadata,
+        )
+
+    def _delete_collection_if_exists(self) -> None:
+        try:
+            self.client.delete_collection(self.collection_name)
+        except Exception as error:
+            logger.info("Chroma collection %s was not present: %s", self.collection_name, error)
+
+    def reset(self) -> None:
+        self._delete_collection_if_exists()
+        self.client.get_or_create_collection(
+            name=self.collection_name,
             metadata={"hnsw:space": "cosine"},
         )
 
-    def reset(self) -> None:
-        name = self.collection.name
-        self.client.delete_collection(name)
-        self.collection = self.client.get_or_create_collection(
-            name=name,
-            metadata={"hnsw:space": "cosine"},
-        )
 
     def add_chunks(
         self,
