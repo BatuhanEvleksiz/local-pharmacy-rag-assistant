@@ -143,7 +143,7 @@ def main() -> None:
                 "Şu an indeksli resmi TİTCK ürün listeleri ürün adı, barkod, etkin madde, "
                 "ATC, firma ve ruhsat bilgisi gibi kayıt bilgilerini içeriyor; yan etki "
                 "metni içermiyor.\n\n"
-                "Bu yüzden Parol'un yan etkileri için güvenilir cevap veremem. Bu cevap "
+                "Bu yüzden bu klinik detay için güvenilir cevap veremem. Bu cevap "
                 "için ilgili KÜB/KT veya kullanma talimatı PDF'i `real_docs/` klasörüne "
                 "eklenip `python ingest.py` yeniden çalıştırılmalı."
             )

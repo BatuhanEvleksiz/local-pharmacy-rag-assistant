@@ -8,5 +8,8 @@ data_sources/
 real_docs/*.txt
 real_docs/*.md
 real_docs/*.pdf
+real_docs/**/*.txt
+real_docs/**/*.md
+real_docs/**/*.pdf
 real_docs/manifest.json
 tmp/
