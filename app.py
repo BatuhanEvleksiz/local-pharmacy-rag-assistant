@@ -133,11 +133,10 @@ def build_local_fallback_answer(question, chunks) -> str:
             + ("..." if len(chunk.text) > 420 else "")
         )
     return (
-        "Yerel LLM endpoint'ine ulaşılamadı, bu yüzden üretken cevap yerine "
-        "bulunan kaynak parçalarının kısa bir özetini gösteriyorum:\n\n"
+        "Bulunan kaynaklara göre ilgili bilgiler:\n\n"
         + "\n\n".join(excerpts)
-        + "\n\nNot: Foundry Local'i baslattiktan sonra ayni soruyu tekrar sorarsan "
-        "model kaynaklara dayalı nihai yanıtı üretebilir."
+        + "\n\nNot: Bu yanıt yalnızca indekslenen belge metinlerinden derlenmiştir; "
+        "doktor veya eczacı danışmanlığının yerine geçmez."
     )
 
 
